@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('logoutButton').addEventListener('click', () => {
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
-        window.location.href = '../login/login.html';
+        window.location.href = 'login.html';
     });
 
     document.getElementById('clientCreateForm').addEventListener('submit', async (event) => {

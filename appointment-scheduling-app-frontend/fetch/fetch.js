@@ -3,7 +3,7 @@ let appointmentList = [];
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token');
     if (!token) {
-        window.location.href = '../login/login.html';
+        window.location.href = 'login.html';
         return;
     }
 
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('logoutButton').addEventListener('click', function () {
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
-        window.location.href = '../login/login.html';
+        window.location.href = 'login.html';
     });
 });
 
