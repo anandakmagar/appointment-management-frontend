@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client and Staff Management</title>
+    <link rel="stylesheet" href="../fetch/fetch.css">
+    <script src="../fetch/fetch.js" defer></script>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="../home/home.html" id="id-home">Home</a></li>
+            <li><a href="../create/create.html">Create</a></li>
+            <li><a href="../fetch/fetch.html">Fetch/Update</a></li>
+            <li><a href="../contact/contact.html" id="contact-link">Contact Us</a></li>
+            <li><button id="logoutButton">Logout</button></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div id="form2">
+            <h3 style="text-align: center;">Search/Update Client, Staff or Appointment</h3>
+            <div class="input-section">
+                <select id="dataType" onchange="handleDataTypeChange()">
+                    <option value="" selected>Click here to select the options</option>
+                    <option value="client">Client</option>
+                    <option value="staff">Staff</option>
+                    <option value="appointment">Appointment</option>
+                </select>
+                <select id="appointmentIdType" onchange="handleAppointmentIdTypeChange()" style="display: none;">
+                    <option value="id">ID</option>
+                    <option value="email">Email</option>
+                    <option value="phone">Phone Number</option>
+                    <option value="all">List of All</option>
+                </select>
+                <input type="text" id="dataId" placeholder="Enter ID" style="display: none;">
+                
+                <select id="appointmentSelection" onchange="handleAppointmentSelectionChange()" style="display: none;">
+                    <option value="single">Single Appointment</option>
+                    <option value="list">Appointment List</option>
+                </select>
+                <input type="text" id="appointmentNumber" placeholder="Enter Appointment Number" style="display: none;">
+                
+                <select id="appointmentListType" onchange="handleAppointmentListTypeChange()" style="display: none;">
+                    <option value="all">All Appointments</option>
+                    <option value="singleDate">All Appointments By Date</option>
+                    <option value="doubleDate">All Appointments By Date Range</option>
+                    <option value="status">All Appointments By Appointment Status</option>
+                    <option value="type">All Appointments By Appointment Type</option>
+                    <option value="today">All Appointments For Today</option>
+                    <option value="typeAndSingleDate">All Appointments By Appointment Type and Date</option>
+                    <option value="typeAndDoubleDate">All Appointments By Appointment Type and Date Range</option>
+                    <option value="statusAndSingleDate">All Appointments By Appointment Status and Date</option>
+                    <option value="statusAndDoubleDate">All Appointments By Appointment Status and Date Range</option>
+                    <option value="statusForToday">All Appointments For Today and By Appointment Status</option>
+                    <option value="typeForToday">All Appointments For Today and By Appointment Type</option>
+                    <option value="statusAndType">All Appointments For Today By Appointment Status and Type</option>
+                </select>
+                
+                <input type="date" id="singleDate" style="display: none;">
+                <input type="date" id="startDate" class="date-input" style="display: none;">
+                <input type="date" id="endDate" class="date-input" style="display: none;">
+                
+                <select id="appointmentStatusFilter" style="display: none;"></select>
+                <select id="appointmentTypeFilter" style="display: none;"></select>
+                
+                <button onclick="fetchData()">Fetch</button>
+            </div>
+        </div>
+
+        <div id="clientList" class="details-section" style="display: none;">
+            <h4>Client List</h4>
+            <div id="clientListContainer"></div>
+        </div>
+
+        <div id="staffList" class="details-section" style="display: none;">
+            <h4>Staff List</h4>
+            <div id="staffListContainer"></div>
+        </div>
+
+        <div id="clientDetails" class="details-section" style="display: none;">
+            <h4>Client Details</h4>
+            <div class="data-info">
+                <p><strong>Client ID:</strong> <span id="clientID"></span></p>
+                <p><strong>Name:</strong> <span id="clientName"></span></p>
+                <p><strong>Email:</strong> <span id="clientEmail"></span></p>
+                <p><strong>Phone Number:</strong> <span id="clientPhoneNumber"></span></p>
+                <p><strong>Street Address:</strong> <span id="clientStreetAddress"></span></p>
+                <p><strong>City:</strong> <span id="clientCity"></span></p>
+                <p><strong>State:</strong> <span id="clientState"></span></p>
+                <p><strong>Postal Code:</strong> <span id="clientPostalCode"></span></p>
+                <p><strong>Created At:</strong> <span id="clientCreatedAt"></span></p>
+                <p><strong>Updated At:</strong> <span id="clientUpdatedAt"></span></p>
+                <button class="btn-edit" id="editButtonClient" onclick="showEditForm('client', document.getElementById('clientID').textContent.trim())">Edit</button>
+                <button class="btn-delete" id="deleteButtonClient" onclick="confirmDelete('client', document.getElementById('clientID').textContent.trim())">Delete</button>
+            </div>
+        </div>
+
+        <div id="staffDetails" class="details-section" style="display: none;">
+            <h4>Staff Details</h4>
+            <div class="data-info">
+                <p><strong>Staff ID:</strong> <span id="staffID"></span></p>
+                <p><strong>Name:</strong> <span id="staffName"></span></p>
+                <p><strong>Email:</strong> <span id="staffEmail"></span></p>
+                <p><strong>Phone Number:</strong> <span id="staffPhoneNumber"></span></p>
+                <p><strong>Street Address:</strong> <span id="staffStreetAddress"></span></p>
+                <p><strong>City:</strong> <span id="staffCity"></span></p>
+                <p><strong>State:</strong> <span id="staffState"></span></p>
+                <p><strong>Postal Code:</strong> <span id="staffPostalCode"></span></p>
+                <p><strong>Created At:</strong> <span id="staffCreatedAt"></span></p>
+                <p><strong>Updated At:</strong> <span id="staffUpdatedAt"></span></p>
+                <button class="btn-edit" id="editButtonStaff" onclick="showEditForm('staff', document.getElementById('staffID').textContent.trim())" >Edit</button>
+                <button class="btn-delete" id="deleteButtonStaff" onclick="confirmDelete('staff', document.getElementById('staffID').textContent.trim())">Delete</button>
+            </div>
+        </div>
+
+        <div id="appointmentList" class="details-section" style="display: none;">
+            <h4 id="appointmentListTitle">Appointments</h4>
+            <div id="appointmentListContainer"></div>
+            <button id="createAppointmentButton" class="btn-create" onclick="showCreateAppointmentForm()">Create Appointment</button>
+        </div>
+
+        <div id="appointmentDetails" class="details-section" style="display: none;">
+            <h4>Appointment Details</h4>
+        </div>
+
+        <div id="editClientForm" class="edit-form" style="display: none;">
+            <h4>Edit Client</h4>
+            <form>
+                <label for="editClientID">Client ID:</label>
+                <input type="text" id="editClientID" readonly>
+                <label for="editClientName">Name:</label>
+                <input type="text" id="editClientName">
+                <label for="editClientEmail">Email:</label>
+                <input type="email" id="editClientEmail">
+                <label for="editClientPhoneNumber">Phone Number:</label>
+                <input type="text" id="editClientPhoneNumber">
+                <label for="editClientStreetAddress">Street Address:</label>
+                <input type="text" id="editClientStreetAddress">
+                <label for="editClientCity">City:</label>
+                <input type="text" id="editClientCity">
+                <label for="editClientState">State:</label>
+                <input type="text" id="editClientState">
+                <label for="editClientPostalCode">Postal Code:</label>
+                <input type="text" id="editClientPostalCode">
+                <button type="button" onclick="updateClient()">Update Client</button>
+            </form>
+        </div>
+
+        <div id="editStaffForm" class="edit-form" style="display: none;">
+            <h4>Edit Staff</h4>
+            <form>
+                <label for="editStaffID">Staff ID:</label>
+                <input type="text" id="editStaffID" readonly>
+                <label for="editStaffName">Name:</label>
+                <input type="text" id="editStaffName">
+                <label for="editStaffEmail">Email:</label>
+                <input type="email" id="editStaffEmail">
+                <label for="editStaffPhoneNumber">Phone Number:</label>
+                <input type="text" id="editStaffPhoneNumber">
+                <label for="editStaffStreetAddress">Street Address:</label>
+                <input type="text" id="editStaffStreetAddress">
+                <label for="editStaffCity">City:</label>
+                <input type="text" id="editStaffCity">
+                <label for="editStaffState">State:</label>
+                <input type="text" id="editStaffState">
+                <label for="editStaffPostalCode">Postal Code:</label>
+                <input type="text" id="editStaffPostalCode">
+                <button type="button" onclick="updateStaff()">Update Staff</button>
+            </form>
+        </div>
+
+        <div id="editAppointmentForm" style="display: none;">
+            <h4>Edit Appointment</h4>
+            <form id="editAppointmentFormElement">
+                <label for="editAppointmentNumber">Appointment Number:</label>
+                <input type="text" id="editAppointmentNumber" readonly>
+                <label for="editAppointmentClientId">Client ID:</label>
+                <input type="text" id="editAppointmentClientId" readonly>
+                <label for="editAppointmentStaffId">Staff ID:</label>
+                <select id="editAppointmentStaffId"></select>
+                <label for="editAppointmentDateTime">Date and Time:</label>
+                <input type="datetime-local" id="editAppointmentDateTime">
+                <label for="editAppointmentType">Type:</label>
+                <select id="editAppointmentType"></select>
+                <label for="editAppointmentStatus">Status:</label>
+                <select id="editAppointmentStatus"></select>
+                <label for="editAppointmentFacilityName">Facility Name:</label>
+                <input type="text" id="editAppointmentFacilityName">
+                <label for="editAppointmentStreetAddress">Street Address:</label>
+                <input type="text" id="editAppointmentStreetAddress">
+                <label for="editAppointmentCity">City:</label>
+                <input type="text" id="editAppointmentCity">
+                <label for="editAppointmentState">State:</label>
+                <input type="text" id="editAppointmentState">
+                <label for="editAppointmentPostalCode">Postal Code:</label>
+                <input type="text" id="editAppointmentPostalCode">
+                <button type="button" onclick="updateAppointment()">Update Appointment</button>
+            </form>
+        </div>
+
+        <div id="createAppointmentForm" class="edit-form" style="display: none;">
+            <h4>Create Appointment</h4>
+            <form>
+                <label for="createAppointmentClientId">Client ID:</label>
+                <input type="text" id="createAppointmentClientId" readonly>
+                <label for="createAppointmentStaffId">Staff ID:</label>
+                <select id="createAppointmentStaffId"></select>
+                <label for="createAppointmentDateTime">Date and Time:</label>
+                <input type="datetime-local" id="createAppointmentDateTime">
+                <label for="createAppointmentType">Type:</label>
+                <select id="createAppointmentType"></select>
+                <label for="createAppointmentStatus">Status:</label>
+                <select id="createAppointmentStatus"></select>
+                <label for="createAppointmentFacilityName">Facility Name:</label>
+                <input type="text" id="createAppointmentFacilityName">
+                <label for="createAppointmentStreetAddress">Street Address:</label>
+                <input type="text" id="createAppointmentStreetAddress">
+                <label for="createAppointmentCity">City:</label>
+                <input type="text" id="createAppointmentCity">
+                <label for="createAppointmentState">State:</label>
+                <input type="text" id="createAppointmentState">
+                <label for="createAppointmentPostalCode">Postal Code:</label>
+                <input type="text" id="createAppointmentPostalCode">
+                <button type="button" onclick="createAppointment()">Create Appointment</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="loading" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Appointment Management System</p>
+    </footer>
+</body>
+</html>

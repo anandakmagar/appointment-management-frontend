@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create User</title>
+    <link rel="stylesheet" href="../create/create.css">
+    <script src="../create/create.js" defer></script>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="../login/login.html" id="id-home">Home</a></li>
+            <li><a href="../create/create.html">Create</a></li>
+            <li><a href="../fetch/fetch.html">Fetch/Update</a></li>
+            <li><a href="../contact/contact.html" id="contact-link">Contact Us</a></li>
+            <li><button id="logoutButton">Logout</button></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h3 style="text-align: center;">Create Client, Staff, or Admin</h3>
+        <div class="input-section">
+            <select id="userType" onchange="handleUserTypeChange()">
+                <option value="">Select User Type</option>
+                <option value="client">Client</option>
+                <option value="staff">Staff</option>
+                <option value="admin">Admin</option>
+            </select>
+        </div>
+
+        <div id="clientForm" class="user-form" style="display:none;">
+            <h4>Create Client</h4>
+            <form id="clientCreateForm">
+                <label for="clientName">Name:</label>
+                <input type="text" id="clientName" required>
+                <label for="clientEmail">Email:</label>
+                <input type="email" id="clientEmail" required>
+                <label for="clientPhoneNumber">Phone Number:</label>
+                <input type="text" id="clientPhoneNumber" required>
+                <label for="clientStreetAddress">Street Address:</label>
+                <input type="text" id="clientStreetAddress" required>
+                <label for="clientCity">City:</label>
+                <input type="text" id="clientCity" required>
+                <label for="clientState">State:</label>
+                <input type="text" id="clientState" required>
+                <label for="clientPostalCode">Postal Code:</label>
+                <input type="text" id="clientPostalCode" required>
+                <button type="submit">Create Client</button>
+            </form>
+        </div>
+
+        <div id="staffForm" class="user-form" style="display:none;">
+            <h4>Create Staff</h4>
+            <form id="staffCreateForm">
+                <label for="staffName">Name:</label>
+                <input type="text" id="staffName" required>
+                <label for="staffEmail">Email:</label>
+                <input type="email" id="staffEmail" required>
+                <label for="staffPhoneNumber">Phone Number:</label>
+                <input type="text" id="staffPhoneNumber" required>
+                <label for="staffStreetAddress">Street Address:</label>
+                <input type="text" id="staffStreetAddress" required>
+                <label for="staffCity">City:</label>
+                <input type="text" id="staffCity" required>
+                <label for="staffState">State:</label>
+                <input type="text" id="staffState" required>
+                <label for="staffPostalCode">Postal Code:</label>
+                <input type="text" id="staffPostalCode" required>
+                <button type="submit">Create Staff</button>
+            </form>
+        </div>
+
+        <div id="adminForm" class="user-form" style="display:none;">
+            <h4>Create Admin</h4>
+            <form id="adminCreateForm">
+                <label for="adminName">Name:</label>
+                <input type="text" id="adminName" required>
+                <label for="adminEmail">Email:</label>
+                <input type="email" id="adminEmail" required>
+                <label for="adminPassword">Password:</label>
+                <input type="password" id="adminPassword" required>
+                <button type="submit">Create Admin</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="loading" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Appointment Management System</p>
+    </footer>
+</body>
+</html>

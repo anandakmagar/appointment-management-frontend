@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <link rel="stylesheet" href="../contact/contact.css">
+    <script src="../contact/contact.js" defer></script>
+</head>
+<body>
+<nav>
+    <ul>
+        <li><a href="../login/login.html">Home</a></li>
+        <li><a href="../create/create.html">Create</a></li>
+        <li><a href="../fetch/fetch.html">Fetch/Update</a></li>
+        <li><a href="../contact/contact.html" id="contact-link">Contact Us</a></li>
+        <li><button id="logoutButton">Logout</button></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <h3 style="text-align: center;">Contact Us</h3>
+    <form id="contactForm">
+        <label for="name">Your Name:</label>
+        <input type="text" id="name" required>
+
+        <label for="email">Your Email:</label>
+        <input type="email" id="email" required>
+
+        <label for="message">Message:</label>
+        <textarea id="message" required></textarea>
+
+        <button type="submit">Send Message</button>
+    </form>
+</div>
+
+<div id="loading" class="loading-overlay" style="display: none;">
+    <div class="loading-spinner"></div>
+</div>
+
+<footer>
+    <p>&copy; 2024 Appointment Management System</p>
+</footer>
+</body>
+</html>
