@@ -6,14 +6,10 @@ const path = require('path');
 const app = express();
 
 // Serve static files from the specific directories
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'contact')));
-app.use(express.static(path.join(__dirname, 'create')));
-app.use(express.static(path.join(__dirname, 'fetch')));
-app.use(express.static(path.join(__dirname, 'home')));
-app.use(express.static(path.join(__dirname, 'login')));
-app.use(express.static(path.join(__dirname, 'password-reset')));
-app.use(express.static(path.join(__dirname, 'request-password-reset')));
+const staticDirectories = ['public', 'contact', 'create', 'fetch', 'home', 'login', 'password-reset', 'request-password-reset'];
+staticDirectories.forEach(dir => {
+    app.use(express.static(path.join(__dirname, dir)));
+});
 
 // Redirect root to login page
 app.get('/', (req, res) => {
@@ -29,6 +25,11 @@ app.get('/create', (req, res) => res.sendFile(path.join(__dirname, 'create', 'cr
 app.get('/contact', (req, res) => res.sendFile(path.join(__dirname, 'contact', 'contact.html')));
 app.get('/password-reset', (req, res) => res.sendFile(path.join(__dirname, 'password-reset', 'password-reset.html')));
 app.get('/request-password-reset', (req, res) => res.sendFile(path.join(__dirname, 'request-password-reset', 'request-password-reset.html')));
+
+// Error handling middleware
+app.use((req, res, next) => {
+    res.status(404).send('Sorry, we cannot find that!');
+});
 
 // Listen on the appropriate port provided by the environment
 const PORT = process.env.PORT || 8080;
