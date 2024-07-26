@@ -17,7 +17,7 @@ document.getElementById('loginForm').addEventListener('submit', async function (
             const data = await response.json();
             localStorage.setItem('token', data.token);
             localStorage.setItem('refreshToken', data.refreshToken);
-            window.location.href = '../home/home.html';
+            window.location.href = 'home.html';
         } else {
             console.error('Failed to log in:', response.status, response.statusText);
             alert('Failed to log in. Please check your credentials.');
