@@ -8,7 +8,7 @@ document.getElementById('requestResetForm').addEventListener('submit', async fun
         });
 
         if (response.ok) {
-            window.location.href = '../password-reset/password-reset.html';
+            window.location.href = 'password-reset.html';
         } else {
             console.error('Failed to send reset code:', response.status, response.statusText);
             alert('Failed to send reset code. Please check the email provided.');
