@@ -26,19 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(checkTokenExpiration, 60000);
 });
 
-function logoutUser() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
-
-    fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/security/logout', {
-        method: 'POST'
-    }).then(response => response.text())
-      .then(text => console.log(text))
-      .finally(() => {
-          window.location.href = 'login.html';
-      });
-}
-
+// Function to check token expiration and trigger logout if expired
 function checkTokenExpiration() {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -55,20 +43,35 @@ function checkTokenExpiration() {
     }
 }
 
+// Function to handle user logout
+async function logoutUser() {
+    try {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+
+        // Attempting to logout from the server (optional)
+        await fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/security/logout', {
+            method: 'POST'
+        });
+    } catch (error) {
+        console.error('Error during logout:', error);
+    } finally {
+        // Redirecting to the login page after clearing the session
+        window.location.href = 'login.html';
+    }
+}
+
 // Checking token expiration on page load
 window.addEventListener('load', checkTokenExpiration);
 
 // Checking token expiration at regular intervals (every minute)
 setInterval(checkTokenExpiration, 60000);
 
-// Triggering logout manually
+// Triggering logout manually when the logout button is clicked
 document.getElementById('logoutButton').addEventListener('click', logoutUser);
 
-// Ensuring the backend API is called even if the user leaves the page open or closes the browser
-window.addEventListener('beforeunload', (event) => {
-    checkTokenExpiration();
-});
-
+// Ensuring token expiration is checked before the user leaves the page or closes the browser
+window.addEventListener('beforeunload', checkTokenExpiration);
 
 
 function handleUserTypeChange() {
