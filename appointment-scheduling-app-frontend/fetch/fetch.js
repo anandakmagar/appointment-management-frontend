@@ -78,16 +78,44 @@ async function loadAppointmentStatuses() {
     }
 }
 
+// async function loadStaffList() {
+//     ;
+//     try {
+//             const response = await fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/staff/fetchAll', {
+//             headers: {
+//                 'Authorization': `Bearer ${localStorage.getItem('token')}`
+//             }
+//         });
+//         if (response.ok) {
+//             const staffList = await response.json();
+//             const staffSelectCreate = document.getElementById('createAppointmentStaffId');
+//             const staffSelectEdit = document.getElementById('editAppointmentStaffId');
+//             staffList.forEach(staff => {
+//                 const option = document.createElement('option');
+//                 option.value = staff.staffId;
+//                 option.textContent = `${staff.staffId} - ${staff.name}`;
+//                 staffSelectCreate.appendChild(option.cloneNode(true));
+//                 staffSelectEdit.appendChild(option.cloneNode(true));
+//             });
+//         } else {
+//             console.error('Failed to load staff list');
+//         }
+//     } catch (error) {
+//         console.error('Error loading staff list:', error);
+//     }
+// }
+
 async function loadStaffList() {
-    ;
+    checkTokenExpiration();
     try {
-            const response = await fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/staff/fetchAll', {
+        const response = await fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/staff/fetchAll', {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
         });
         if (response.ok) {
             const staffList = await response.json();
+            console.log('Staff List:', staffList);  // Add this line to check the response
             const staffSelectCreate = document.getElementById('createAppointmentStaffId');
             const staffSelectEdit = document.getElementById('editAppointmentStaffId');
             staffList.forEach(staff => {
