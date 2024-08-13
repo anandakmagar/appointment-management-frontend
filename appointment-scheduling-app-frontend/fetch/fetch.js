@@ -1,4 +1,5 @@
 function logoutUser() {
+    const token = localStorage.getItem('token');
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
 
