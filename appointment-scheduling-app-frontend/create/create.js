@@ -53,6 +53,7 @@ async function logoutUser() {
         await fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/security/logout', {
             method: 'POST'
         });
+
     } catch (error) {
         console.error('Error during logout:', error);
     } finally {
@@ -61,14 +62,17 @@ async function logoutUser() {
     }
 }
 
+// Triggering logout manually when the logout button is clicked
+document.getElementById('logoutButton').addEventListener('click', (event) => {
+    event.preventDefault(); // Prevent default button behavior
+    logoutUser();
+});
+
 // Checking token expiration on page load
 window.addEventListener('load', checkTokenExpiration);
 
 // Checking token expiration at regular intervals (every minute)
 setInterval(checkTokenExpiration, 60000);
-
-// Triggering logout manually when the logout button is clicked
-document.getElementById('logoutButton').addEventListener('click', logoutUser);
 
 // Ensuring token expiration is checked before the user leaves the page or closes the browser
 window.addEventListener('beforeunload', checkTokenExpiration);
