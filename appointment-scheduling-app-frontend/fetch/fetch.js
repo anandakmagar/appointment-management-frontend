@@ -13,10 +13,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadAppointmentStatuses();
     await loadStaffList();
 
-    document.getElementById('logoutButton').addEventListener('click', function () {
-        // Checking token expiration every minute
-        setInterval(checkTokenExpiration, 60000);
-    });
+    document.getElementById('logoutButton').addEventListener('click', logoutUser);
+
+    // Checking token expiration every minute
+    setInterval(checkTokenExpiration, 60000);
 });
 
 function logoutUser() {
