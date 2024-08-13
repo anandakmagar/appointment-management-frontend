@@ -5,15 +5,12 @@ function logoutUser() {
 
     fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/security/logout', {
         method: 'POST'
-    }).then(response => {
-        if (response.ok) {
-            console.log('Logged out successfully');
-        } else {
-            console.log('Failed to log out');
-        }
-    }).finally(() => {
-        window.location.href = 'login.html';
-    });
+    }).then(response => response.text())
+      .then(text => console.log(text))
+      .finally(() => {
+          window.location.href = 'login.html';
+      });
+    
 }
 
 function checkTokenExpiration() {
