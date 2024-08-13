@@ -1,5 +1,4 @@
 function logoutUser() {
-    const token = localStorage.getItem('token');
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
 
@@ -10,7 +9,6 @@ function logoutUser() {
       .finally(() => {
           window.location.href = 'login.html';
       });
-    
 }
 
 function checkTokenExpiration() {
@@ -32,12 +30,16 @@ function checkTokenExpiration() {
 // Checking token expiration on page load
 window.addEventListener('load', checkTokenExpiration);
 
-// Also, checking token expiration at regular intervals (every minute)
+// Checking token expiration at regular intervals (every minute)
 setInterval(checkTokenExpiration, 60000);
 
 // Triggering logout manually
 document.getElementById('logoutButton').addEventListener('click', logoutUser);
 
+// Ensuring the backend API is called even if the user leaves the page open or closes the browser
+window.addEventListener('beforeunload', (event) => {
+    checkTokenExpiration();
+});
 
 
 

@@ -1,19 +1,14 @@
 function logoutUser() {
-    const token = localStorage.getItem('token');
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
 
     fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/security/logout', {
         method: 'POST'
-    }).then(response => {
-        if (response.ok) {
-            console.log('Logged out successfully');
-        } else {
-            console.log('Failed to log out');
-        }
-    }).finally(() => {
-        window.location.href = 'login.html';
-    });
+    }).then(response => response.text())
+      .then(text => console.log(text))
+      .finally(() => {
+          window.location.href = 'login.html';
+      });
 }
 
 function checkTokenExpiration() {
@@ -35,11 +30,16 @@ function checkTokenExpiration() {
 // Checking token expiration on page load
 window.addEventListener('load', checkTokenExpiration);
 
-// Also, checking token expiration at regular intervals (every minute)
+// Checking token expiration at regular intervals (every minute)
 setInterval(checkTokenExpiration, 60000);
 
 // Triggering logout manually
 document.getElementById('logoutButton').addEventListener('click', logoutUser);
+
+// Ensuring the backend API is called even if the user leaves the page open or closes the browser
+window.addEventListener('beforeunload', (event) => {
+    checkTokenExpiration();
+});
 
 
 
