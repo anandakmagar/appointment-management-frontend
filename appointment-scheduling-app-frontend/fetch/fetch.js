@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     checkTokenExpiration();
     const token = localStorage.getItem('token');
     if (!token) {
-        window.location.href = '../login/login.html';
+        window.location.href = 'login.html';
         return;
     }
 
@@ -14,10 +14,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadStaffList();
 
     document.getElementById('logoutButton').addEventListener('click', function () {
-        // localStorage.removeItem('token');
-        // localStorage.removeItem('refreshToken');
-        // window.location.href = '../login/login.html';
-
         // Checking token expiration every minute
         setInterval(checkTokenExpiration, 60000);
     });

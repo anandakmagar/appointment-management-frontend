@@ -150,8 +150,8 @@ async function createUser(type) {
 
             alert(idField);
             document.getElementById(`${type}CreateForm`).reset();
-            handleUserTypeChange(); // Hide all forms and show user type selection
-            document.getElementById('userType').value = ''; // Reset userType selection
+            handleUserTypeChange(); // Hiding all forms and show user type selection
+            document.getElementById('userType').value = ''; // Resetting userType selection
         } else {
             alert(`Failed to create ${type}`);
         }
