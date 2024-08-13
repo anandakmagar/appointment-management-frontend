@@ -39,8 +39,11 @@ function checkTokenExpiration() {
     }
 }
 
-// Function to log out the user
+// Function to log out the user with a loading spinner
 function logoutUser() {
+    // Show the loading spinner
+    document.getElementById('loading').style.display = 'flex';
+
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
 
@@ -61,7 +64,6 @@ function handleFormSubmit(userType) {
 
 // Add beforeunload event to ensure proper logout when the user leaves the page
 window.addEventListener('beforeunload', checkTokenExpiration);
-
 
 function handleUserTypeChange() {
     const userType = document.getElementById('userType').value;
