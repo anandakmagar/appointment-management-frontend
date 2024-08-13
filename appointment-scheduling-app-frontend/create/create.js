@@ -4,11 +4,7 @@ function logoutUser() {
     localStorage.removeItem('refreshToken');
 
     fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/security/logout', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
+        method: 'POST'
     }).then(response => {
         if (response.ok) {
             console.log('Logged out successfully');
