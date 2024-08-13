@@ -1,3 +1,24 @@
+let appointmentList = [];
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const token = localStorage.getItem('token');
+    checkTokenExpiration();
+    if (!token) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    await loadAppointmentTypes();
+    await loadAppointmentStatuses();
+    await loadStaffList();
+
+    document.getElementById('logoutButton').addEventListener('click', function () {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        window.location.href = 'login.html';
+    });
+});
+
 function logoutUser() {
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
@@ -47,26 +68,7 @@ window.addEventListener('beforeunload', (event) => {
 
 
 
-let appointmentList = [];
 
-document.addEventListener('DOMContentLoaded', async () => {
-    const token = localStorage.getItem('token');
-    checkTokenExpiration();
-    if (!token) {
-        window.location.href = 'login.html';
-        return;
-    }
-
-    await loadAppointmentTypes();
-    await loadAppointmentStatuses();
-    await loadStaffList();
-
-    document.getElementById('logoutButton').addEventListener('click', function () {
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
-        window.location.href = 'login.html';
-    });
-});
 
 
 async function loadAppointmentTypes() {
