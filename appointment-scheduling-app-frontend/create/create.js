@@ -1,3 +1,31 @@
+
+document.addEventListener('DOMContentLoaded', () => {
+    checkTokenExpiration();
+    document.getElementById('logoutButton').addEventListener('click', () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        checkTokenExpiration();
+        window.location.href = 'login.html';
+    });
+
+    document.getElementById('clientCreateForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        await createUser('client');
+    });
+
+    document.getElementById('staffCreateForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        await createUser('staff');
+    });
+
+    document.getElementById('adminCreateForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        await createUser('admin');
+    });
+
+    setInterval(checkTokenExpiration, 60000);
+});
+
 function logoutUser() {
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
@@ -42,40 +70,7 @@ window.addEventListener('beforeunload', (event) => {
 });
 
 
-
-
-
-
-
-
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('logoutButton').addEventListener('click', () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
-        checkTokenExpiration();
-        window.location.href = 'login.html';
-    });
-
-    document.getElementById('clientCreateForm').addEventListener('submit', async (event) => {
-        event.preventDefault();
-        await createUser('client');
-    });
-
-    document.getElementById('staffCreateForm').addEventListener('submit', async (event) => {
-        event.preventDefault();
-        await createUser('staff');
-    });
-
-    document.getElementById('adminCreateForm').addEventListener('submit', async (event) => {
-        event.preventDefault();
-        await createUser('admin');
-    });
-});
-
 function handleUserTypeChange() {
-    checkTokenExpiration();
     const userType = document.getElementById('userType').value;
     document.querySelectorAll('.user-form').forEach(form => form.style.display = 'none');
     if (userType === 'client') {
@@ -88,7 +83,6 @@ function handleUserTypeChange() {
 }
 
 async function createUser(type) {
-    checkTokenExpiration();
     let apiUrl = '';
     let payload = {};
 
