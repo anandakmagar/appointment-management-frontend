@@ -35,14 +35,7 @@ function checkTokenExpiration() {
     }
 }
 
-// Checking token expiration on page load
-window.addEventListener('load', checkTokenExpiration);
 
-// Also, checking token expiration at regular intervals (every minute)
-setInterval(checkTokenExpiration, 60000);
-
-// Triggering logout manually
-document.getElementById('logoutButton').addEventListener('click', logoutUser);
 
 
 document.getElementById('loginForm').addEventListener('submit', async function (event) {
@@ -74,3 +67,12 @@ document.getElementById('loginForm').addEventListener('submit', async function (
         alert('An error occurred while logging in.');
     }
 });
+
+// Checking token expiration on page load
+window.addEventListener('load', checkTokenExpiration);
+
+// Also, checking token expiration at regular intervals (every minute)
+setInterval(checkTokenExpiration, 60000);
+
+// Triggering logout manually
+document.getElementById('logoutButton').addEventListener('click', logoutUser);
