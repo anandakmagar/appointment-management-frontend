@@ -2,46 +2,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial token expiration check
     checkTokenExpiration();
 
+    // Event listener for logout button
     document.getElementById('logoutButton').addEventListener('click', async () => {
-        // Clearing tokens
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
-
-        // Notifying the server about the logout
-        try {
-            await fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/security/logout', {
-                method: 'POST'
-            });
-        } catch (error) {
-            console.error('Error during server logout:', error);
-        }
-
-        // Redirecting to login page
-        window.location.href = 'login.html';
+        await logoutUser();
     });
 
-    // Handling form submissions for different user types
-    document.getElementById('clientCreateForm').addEventListener('submit', async (event) => {
-        event.preventDefault();
-        await createUser('client');
-    });
-
-    document.getElementById('staffCreateForm').addEventListener('submit', async (event) => {
-        event.preventDefault();
-        await createUser('staff');
-    });
-
-    document.getElementById('adminCreateForm').addEventListener('submit', async (event) => {
-        event.preventDefault();
-        await createUser('admin');
-    });
-
-    // Checking token expiration at regular intervals
+    // Check token expiration at regular intervals
     setInterval(checkTokenExpiration, 60000);
 });
 
-
-// Function to check token expiration and trigger logout if expired
+// Function to check token expiration
 function checkTokenExpiration() {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -60,37 +30,27 @@ function checkTokenExpiration() {
 
 // Function to handle user logout
 async function logoutUser() {
-    try {
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
+    // Clear tokens from localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
 
-        // Attempting to logout from the server (optional)
+    // Optional: Notify the server about the logout
+    try {
         await fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/security/logout', {
             method: 'POST'
         });
-
     } catch (error) {
-        console.error('Error during logout:', error);
-    } finally {
-        // Redirecting to the login page after clearing the session
-        window.location.href = 'login.html';
+        console.error('Error during server logout:', error);
     }
+
+    // Redirect to login page
+    window.location.href = 'login.html';
 }
 
-// Triggering logout manually when the logout button is clicked
-document.getElementById('logoutButton').addEventListener('click', (event) => {
-    event.preventDefault(); // Prevent default button behavior
-    logoutUser();
+// Ensure that the backend API is called even if the user leaves the page open or closes the browser
+window.addEventListener('beforeunload', (event) => {
+    checkTokenExpiration();
 });
-
-// Checking token expiration on page load
-window.addEventListener('load', checkTokenExpiration);
-
-// Checking token expiration at regular intervals (every minute)
-setInterval(checkTokenExpiration, 60000);
-
-// Ensuring token expiration is checked before the user leaves the page or closes the browser
-window.addEventListener('beforeunload', checkTokenExpiration);
 
 
 function handleUserTypeChange() {
