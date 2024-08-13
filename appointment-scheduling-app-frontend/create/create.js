@@ -1,13 +1,26 @@
-
 document.addEventListener('DOMContentLoaded', () => {
+    // Initial token expiration check
     checkTokenExpiration();
-    document.getElementById('logoutButton').addEventListener('click', () => {
+
+    document.getElementById('logoutButton').addEventListener('click', async () => {
+        // Clearing tokens
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
-        checkTokenExpiration();
+
+        // Notifying the server about the logout
+        try {
+            await fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/security/logout', {
+                method: 'POST'
+            });
+        } catch (error) {
+            console.error('Error during server logout:', error);
+        }
+
+        // Redirecting to login page
         window.location.href = 'login.html';
     });
 
+    // Handling form submissions for different user types
     document.getElementById('clientCreateForm').addEventListener('submit', async (event) => {
         event.preventDefault();
         await createUser('client');
@@ -23,8 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
         await createUser('admin');
     });
 
+    // Checking token expiration at regular intervals
     setInterval(checkTokenExpiration, 60000);
 });
+
 
 // Function to check token expiration and trigger logout if expired
 function checkTokenExpiration() {
