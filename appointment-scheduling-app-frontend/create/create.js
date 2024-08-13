@@ -26,36 +26,34 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(checkTokenExpiration, 60000);
 });
 
-async function logoutUser() {
-    try {
-        // Hiding the page content to prevent flickering
-        document.body.style.opacity = '0.5'; // Reducing opacity for a smooth transition
-        document.body.style.pointerEvents = 'none'; // Disabling interactions during logout
+function logoutUser() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
 
-        // Remove tokens from localStorage
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
-
-        // Attempting to call the logout API
-        const response = await fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/security/logout', {
-            method: 'POST'
-        });
-
-        if (!response.ok) {
-            console.error('Failed to logout:', response.statusText);
-        }
-
-        // Allowing time for the user to see the transition 
-        await new Promise(resolve => setTimeout(resolve, 300));
-
-    } catch (error) {
-        console.error('Error during logout:', error);
-    } finally {
-        // Redirecting to the login page
-        window.location.href = 'login.html';
-    }
+    fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/security/logout', {
+        method: 'POST'
+    }).then(response => response.text())
+      .then(text => console.log(text))
+      .finally(() => {
+          window.location.href = 'login.html';
+      });
 }
 
+function checkTokenExpiration() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        logoutUser();
+        return;
+    }
+
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const expirationTime = payload.exp * 1000;
+    const currentTime = Date.now();
+
+    if (currentTime >= expirationTime) {
+        logoutUser();
+    }
+}
 
 // Checking token expiration on page load
 window.addEventListener('load', checkTokenExpiration);
@@ -70,6 +68,7 @@ document.getElementById('logoutButton').addEventListener('click', logoutUser);
 window.addEventListener('beforeunload', (event) => {
     checkTokenExpiration();
 });
+
 
 
 function handleUserTypeChange() {
