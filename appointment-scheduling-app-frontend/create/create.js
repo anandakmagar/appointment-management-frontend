@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Check token expiration on page load
+    // Checking token expiration on page load
     checkTokenExpiration();
 
     // Set up event listeners for form submissions
@@ -7,13 +7,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('staffCreateForm').addEventListener('submit', handleFormSubmit('staff'));
     document.getElementById('adminCreateForm').addEventListener('submit', handleFormSubmit('admin'));
 
-    // Set up the logout button event listener
+    // Setting up the logout button event listener
     document.getElementById('logoutButton').addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent default behavior to avoid any unintended actions
-        logoutUser(); // Call the logout function
+        event.preventDefault(); // Preventing default behavior to avoid any unintended actions
+        logoutUser(); // Calling the logout function
     });
 
-    // Set an interval to check token expiration every minute
+    // Setting an interval to check token expiration every minute
     setInterval(checkTokenExpiration, 60000);
 });
 
@@ -50,7 +50,7 @@ function logoutUser() {
     fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/security/logout', {
         method: 'POST'
     }).finally(() => {
-        window.location.href = '../login/login.html';
+        window.location.href = 'login.html';
     });
 }
 
@@ -62,7 +62,7 @@ function handleFormSubmit(userType) {
     };
 }
 
-// Add beforeunload event to ensure proper logout when the user leaves the page
+// Adding beforeunload event to ensure proper logout when the user leaves the page
 window.addEventListener('beforeunload', checkTokenExpiration);
 
 function handleUserTypeChange() {

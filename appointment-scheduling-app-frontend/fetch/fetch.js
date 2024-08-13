@@ -3,6 +3,7 @@ let appointmentList = [];
 document.addEventListener('DOMContentLoaded', async () => {
     // Checking token expiration on page load
     checkTokenExpiration();
+
     const token = localStorage.getItem('token');
     if (!token) {
         window.location.href = 'login.html';
@@ -13,33 +14,51 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadAppointmentStatuses();
     await loadStaffList();
 
-    document.getElementById('logoutButton').addEventListener('click', logoutUser);
+    document.getElementById('logoutButton').addEventListener('click', (event) => {
+        event.preventDefault(); // Preventing default behavior
+        logoutUser(); // Calling the logout function
+    });
 
-    // Checking token expiration every minute
+    // Setting an interval to check token expiration every minute
     setInterval(checkTokenExpiration, 60000);
 });
 
-async function logoutUser() {
-    try {
-        // Hiding the page content to prevent flickering
-        document.body.style.opacity = '0.5'; // Reducing opacity for a smooth transition
-        document.body.style.pointerEvents = 'none'; // Disabling interactions during logout
+// Function to handle token expiration and logout
+function checkTokenExpiration() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        logoutUser();
+        return;
+    }
 
-        // Remove tokens from localStorage
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const expirationTime = payload.exp * 1000;
+        const currentTime = Date.now();
+
+        if (currentTime >= expirationTime) {
+            logoutUser();
+        }
+    } catch (e) {
+        console.error('Invalid token format', e);
+        logoutUser();
+    }
+}
+
+// Function to log out the user with a loading spinner
+async function logoutUser() {
+    // Showing the loading spinner
+    document.getElementById('loading').style.display = 'flex';
+
+    try {
+        // Removing tokens from localStorage
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
 
         // Attempting to call the logout API
-        const response = await fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/security/logout', {
+        await fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/security/logout', {
             method: 'POST'
         });
-
-        if (!response.ok) {
-            console.error('Failed to logout:', response.statusText);
-        }
-
-        // Allowing time for the user to see the transition 
-        await new Promise(resolve => setTimeout(resolve, 300));
 
     } catch (error) {
         console.error('Error during logout:', error);
@@ -49,11 +68,8 @@ async function logoutUser() {
     }
 }
 
-
-// Ensuring the backend API is called even if the user leaves the page open or closes the browser
-window.addEventListener('beforeunload', (event) => {
-    checkTokenExpiration();
-});
+// Adding beforeunload event to ensure proper logout when the user leaves the page
+window.addEventListener('beforeunload', checkTokenExpiration);
 
 async function loadAppointmentTypes() {
     try {
