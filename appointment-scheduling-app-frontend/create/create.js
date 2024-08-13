@@ -1,3 +1,22 @@
+document.addEventListener('DOMContentLoaded', () => {
+    // Check token expiration on page load
+    checkTokenExpiration();
+
+    // Set up event listeners for form submissions
+    document.getElementById('clientCreateForm').addEventListener('submit', handleFormSubmit('client'));
+    document.getElementById('staffCreateForm').addEventListener('submit', handleFormSubmit('staff'));
+    document.getElementById('adminCreateForm').addEventListener('submit', handleFormSubmit('admin'));
+
+    // Set up the logout button event listener
+    document.getElementById('logoutButton').addEventListener('click', (event) => {
+        event.preventDefault(); // Prevent default behavior to avoid any unintended actions
+        logoutUser(); // Call the logout function
+    });
+
+    // Set an interval to check token expiration every minute
+    setInterval(checkTokenExpiration, 60000);
+});
+
 // Function to handle token expiration and logout
 function checkTokenExpiration() {
     const token = localStorage.getItem('token');
@@ -6,11 +25,16 @@ function checkTokenExpiration() {
         return;
     }
 
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    const expirationTime = payload.exp * 1000;
-    const currentTime = Date.now();
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const expirationTime = payload.exp * 1000;
+        const currentTime = Date.now();
 
-    if (currentTime >= expirationTime) {
+        if (currentTime >= expirationTime) {
+            logoutUser();
+        }
+    } catch (e) {
+        console.error('Invalid token format', e);
         logoutUser();
     }
 }
@@ -23,28 +47,21 @@ function logoutUser() {
     fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/security/logout', {
         method: 'POST'
     }).finally(() => {
-        window.location.href = 'login.html';
+        window.location.href = '../login/login.html';
     });
 }
 
-// Event listener for the DOMContentLoaded event
-document.addEventListener('DOMContentLoaded', () => {
-    checkTokenExpiration(); // Check token expiration on page load
-
-    // Set up the logout button event listener
-    document.getElementById('logoutButton').addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent default behavior to avoid any unintended actions
-        logoutUser(); // Call the logout function
-    });
-
-    // Set an interval to check token expiration every minute
-    setInterval(checkTokenExpiration, 60000);
-});
+// Helper function to handle form submission
+function handleFormSubmit(userType) {
+    return async (event) => {
+        event.preventDefault();
+        await createUser(userType);
+    };
+}
 
 // Add beforeunload event to ensure proper logout when the user leaves the page
-window.addEventListener('beforeunload', () => {
-    checkTokenExpiration();
-});
+window.addEventListener('beforeunload', checkTokenExpiration);
+
 
 function handleUserTypeChange() {
     const userType = document.getElementById('userType').value;
