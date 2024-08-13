@@ -1,7 +1,61 @@
+function logoutUser() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+
+    fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/security/logout', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+    }).then(response => {
+        if (response.ok) {
+            console.log('Logged out successfully');
+        } else {
+            console.log('Failed to log out');
+        }
+    }).finally(() => {
+        window.location.href = 'login.html';
+    });
+}
+
+function checkTokenExpiration() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        logoutUser();
+        return;
+    }
+
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const expirationTime = payload.exp * 1000;
+    const currentTime = Date.now();
+
+    if (currentTime >= expirationTime) {
+        logoutUser();
+    }
+}
+
+// Checking token expiration on page load
+window.addEventListener('load', checkTokenExpiration);
+
+// Also, checking token expiration at regular intervals (every minute)
+setInterval(checkTokenExpiration, 60000);
+
+// Triggering logout manually
+document.getElementById('logoutButton').addEventListener('click', logoutUser);
+
+
+
+
+
+
+
+
 let appointmentList = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token');
+    checkTokenExpiration();
     if (!token) {
         window.location.href = 'login.html';
         return;
@@ -20,6 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
 async function loadAppointmentTypes() {
+    checkTokenExpiration();
     try {
             const response = await fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/appointment/fetchAllAppointmentType', {
             headers: {
@@ -48,6 +103,7 @@ async function loadAppointmentTypes() {
 }
 
 async function loadAppointmentStatuses() {
+    checkTokenExpiration();
     try {
             const response = await fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/appointment/fetchAllAppointmentStatus', {
             headers: {
@@ -76,6 +132,7 @@ async function loadAppointmentStatuses() {
 }
 
 async function loadStaffList() {
+    checkTokenExpiration();
     try {
             const response = await fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/staff/fetchAll', {
             headers: {
@@ -102,6 +159,7 @@ async function loadStaffList() {
 }
 
 function handleDataTypeChange() {
+    checkTokenExpiration();
     const dataType = document.getElementById('dataType').value;
     const appointmentIdType = document.getElementById('appointmentIdType');
     const dataId = document.getElementById('dataId');
@@ -136,6 +194,7 @@ function handleDataTypeChange() {
 }
 
 function handleAppointmentIdTypeChange() {
+    checkTokenExpiration();
     const appointmentIdType = document.getElementById('appointmentIdType').value;
     const dataId = document.getElementById('dataId');
 
@@ -151,6 +210,7 @@ function handleAppointmentIdTypeChange() {
 }
 
 function handleAppointmentSelectionChange() {
+    checkTokenExpiration();
     const appointmentSelection = document.getElementById('appointmentSelection').value;
     const appointmentNumber = document.getElementById('appointmentNumber');
     const appointmentListType = document.getElementById('appointmentListType');
@@ -177,6 +237,7 @@ function handleAppointmentSelectionChange() {
 }
 
 function handleAppointmentListTypeChange() {
+    checkTokenExpiration();
     const appointmentListType = document.getElementById('appointmentListType').value;
     const singleDate = document.getElementById('singleDate');
     const startDate = document.getElementById('startDate');
@@ -227,6 +288,7 @@ function handleAppointmentListTypeChange() {
 }
 
 function displayClientDetails(client) {
+    checkTokenExpiration();
     const clientDetails = document.getElementById('clientDetails');
     const clientName = document.getElementById('clientName');
     const clientEmail = document.getElementById('clientEmail');
@@ -277,6 +339,7 @@ function displayClientDetails(client) {
 }
 
 function displayStaffDetails(staff) {
+    checkTokenExpiration();
     const clientDetails = document.getElementById('clientDetails');
     const staffDetails = document.getElementById('staffDetails');
 
@@ -331,6 +394,7 @@ function displayStaffDetails(staff) {
 }
 
 async function fetchAppointments(type, id) {
+    checkTokenExpiration();
     let apiUrl = '';
     if (type === 'clientId') {
         apiUrl = `https://appointment-management-da90d3c8d8ca.herokuapp.com/appointment/fetchByClientId?clientId=${id}`;
@@ -358,6 +422,7 @@ async function fetchAppointments(type, id) {
 }
 
 function displayAppointmentDetails(appointment) {
+    checkTokenExpiration();
     const appointmentDetails = document.getElementById('appointmentDetails');
     appointmentDetails.style.display = 'block';
 
@@ -377,6 +442,7 @@ function displayAppointmentDetails(appointment) {
 }
 
 function displayAppointmentList(appointments, appointmentIdType) {
+    checkTokenExpiration();
     const appointmentListContainer = document.getElementById('appointmentListContainer');
     const appointmentList = document.getElementById('appointmentList');
     const appointmentListTitle = document.getElementById('appointmentListTitle');
@@ -438,6 +504,7 @@ function displayAppointmentList(appointments, appointmentIdType) {
 }
 
 function showEditForm(type, id) {
+    checkTokenExpiration();
     console.log("Type and ID:", type, id); 
 
     document.getElementById("clientDetails").style.display = "none";
@@ -459,6 +526,7 @@ function showEditForm(type, id) {
 }
 
 async function fetchClientDetails(clientId) {
+    checkTokenExpiration();
     try {
         const response = await fetch(`https://appointment-management-da90d3c8d8ca.herokuapp.com/client/fetch?clientId=${clientId}`, {
             headers: {
@@ -477,6 +545,7 @@ async function fetchClientDetails(clientId) {
 }
 
 function populateClientEditForm(client) {
+    checkTokenExpiration();
     document.getElementById('editClientID').value = client.clientId;
     document.getElementById('editClientName').value = client.name;
     document.getElementById('editClientEmail').value = client.email;
@@ -496,6 +565,7 @@ function populateClientEditForm(client) {
 }
 
 async function fetchStaffDetails(staffId) {
+    checkTokenExpiration();
     try {
         const response = await fetch(`https://appointment-management-da90d3c8d8ca.herokuapp.com/staff/fetch?staffId=${staffId}`, {
             headers: {
@@ -514,6 +584,7 @@ async function fetchStaffDetails(staffId) {
 }
 
 function populateStaffEditForm(staff) {
+    checkTokenExpiration();
     document.getElementById('editStaffID').value = staff.staffId;
     document.getElementById('editStaffName').value = staff.name;
     document.getElementById('editStaffEmail').value = staff.email;
@@ -533,6 +604,7 @@ function populateStaffEditForm(staff) {
 }
 
 async function fetchData() {
+    checkTokenExpiration();
     const dataType = document.getElementById('dataType').value;
     const appointmentIdType = document.getElementById('appointmentIdType').value;
     const dataId = document.getElementById('dataId').value;
@@ -634,6 +706,7 @@ async function fetchData() {
 }
 
 function displayData(data, dataType, showCreateButton) {
+    checkTokenExpiration();
     if (dataType === 'client') {
         if (Array.isArray(data)) {
             displayClientList(data);
@@ -657,6 +730,7 @@ function displayData(data, dataType, showCreateButton) {
 
 
 function displayClientList(clients) {
+    checkTokenExpiration();
     const clientListContainer = document.getElementById('clientListContainer');
     clientListContainer.innerHTML = ''; // Clear previous data
     clients.forEach(client => {
@@ -676,6 +750,7 @@ function displayClientList(clients) {
 }
 
 function displayStaffList(staffs) {
+    checkTokenExpiration();
     const staffListContainer = document.getElementById('staffListContainer');
     staffListContainer.innerHTML = ''; // Clear previous data
     staffs.forEach(staff => {
@@ -695,6 +770,7 @@ function displayStaffList(staffs) {
 }
 
 function displayAppointmentList(appointments, showCreateButton) {
+    checkTokenExpiration();
     const appointmentListContainer = document.getElementById('appointmentListContainer');
     const appointmentList = document.getElementById('appointmentList');
     const appointmentListTitle = document.getElementById('appointmentListTitle');
@@ -739,6 +815,7 @@ function displayAppointmentList(appointments, showCreateButton) {
 }
 
 function showEditFormAppointment(appointmentNumber) {
+    checkTokenExpiration();
     const appointment = window.appointmentList.find(a => a.appointmentNumber === appointmentNumber);
     if (appointment) {
         const form = document.querySelector('#editAppointmentFormElement');
@@ -770,6 +847,7 @@ function showEditFormAppointment(appointmentNumber) {
 }
 
 async function updateClient() {
+    checkTokenExpiration();
     const clientId = document.getElementById('editClientID').value;
     const clientName = document.getElementById('editClientName').value;
     const clientEmail = document.getElementById('editClientEmail').value;
@@ -828,6 +906,7 @@ async function updateClient() {
 }
 
 async function updateStaff() {
+    checkTokenExpiration();
     const staffId = document.getElementById('editStaffID').value;
     const staffName = document.getElementById('editStaffName').value;
     const staffEmail = document.getElementById('editStaffEmail').value;
@@ -886,6 +965,7 @@ async function updateStaff() {
 }
 
 async function updateAppointment() {
+    checkTokenExpiration();
     const appointmentNumber = document.getElementById('editAppointmentNumber').value;
     const clientId = document.getElementById('editAppointmentClientId').value;
     const staffId = document.getElementById('editAppointmentStaffId').value;
@@ -950,6 +1030,7 @@ async function updateAppointment() {
 }
 
 function confirmDelete(type, id) {
+    checkTokenExpiration();
     const confirmation = confirm(`Are you sure you want to delete this ${type} with ID ${id}?`);
     if (confirmation) {
         deleteData(type, id);
@@ -957,6 +1038,7 @@ function confirmDelete(type, id) {
 }
 
 function confirmDeleteAppointment(appointmentNumber) {
+    checkTokenExpiration();
     const confirmation = confirm(`Are you sure you want to delete this appointment with number ${appointmentNumber}?`);
     if (confirmation) {
         deleteData('appointment', appointmentNumber);
@@ -964,6 +1046,7 @@ function confirmDeleteAppointment(appointmentNumber) {
 }
 
 async function deleteData(type, id) {
+    checkTokenExpiration();
     const apiBaseUrl = {
         client: `https://appointment-management-da90d3c8d8ca.herokuapp.com/admin/client/delete?clientId=${id}`,
         staff: `https://appointment-management-da90d3c8d8ca.herokuapp.com/admin/staff/delete?staffId=${id}`,
@@ -1002,6 +1085,7 @@ async function deleteData(type, id) {
 }
 
 function showCreateAppointmentForm() {
+    checkTokenExpiration();
     const createForm = document.getElementById('createAppointmentForm');
     const clientId = document.getElementById('clientID').textContent;
     document.getElementById('createAppointmentClientId').value = clientId;
@@ -1012,6 +1096,7 @@ function showCreateAppointmentForm() {
 }
 
 async function createAppointment() {
+    checkTokenExpiration();
     const clientId = document.getElementById('createAppointmentClientId').value;
     const staffId = document.getElementById('createAppointmentStaffId').value;
     const appointmentDateTime = document.getElementById('createAppointmentDateTime').value;
