@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadAppointmentTypes();
     await loadAppointmentStatuses();
     await loadStaffList();
+    await loadClientList();
 
     document.getElementById('logoutButton').addEventListener('click', (event) => {
         event.preventDefault(); // Preventing default behavior
@@ -124,6 +125,33 @@ async function loadAppointmentStatuses() {
         }
     } catch (error) {
         console.error('Error loading appointment statuses:', error);
+    }
+}
+
+// Function to load the list of clients
+async function loadClientList() {
+    try {
+        const response = await fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/client/fetchAllClients', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        if (response.ok) {
+            const clientList = await response.json();
+            const clientSelectCreate = document.getElementById('createAppointmentClientId');
+            const clientSelectEdit = document.getElementById('editAppointmentClientId');
+            clientList.forEach(client => {
+                const option = document.createElement('option');
+                option.value = client.clientId;
+                option.textContent = `${client.clientId} - ${client.name}`;
+                clientSelectCreate.appendChild(option.cloneNode(true));
+                clientSelectEdit.appendChild(option.cloneNode(true));
+            });
+        } else {
+            console.error('Failed to load client list');
+        }
+    } catch (error) {
+        console.error('Error loading client list:', error);
     }
 }
 
@@ -1053,10 +1081,23 @@ async function deleteData(type, id) {
     }
 }
 
+// function showCreateAppointmentForm() {
+//     const createForm = document.getElementById('createAppointmentForm');
+//     const clientId = document.getElementById('clientID').textContent;
+//     document.getElementById('createAppointmentClientId').value = clientId;
+//     createForm.style.display = 'block';
+//     document.getElementById("clientDetails").style.display="none";
+//     document.getElementById("appointmentDetails").style.display="none";
+//     document.getElementById("appointmentList").style.display="none";
+// }
+
+// Showing the form for creating an appointment, and load the client list when accessed from the staff page
 function showCreateAppointmentForm() {
     const createForm = document.getElementById('createAppointmentForm');
-    const clientId = document.getElementById('clientID').textContent;
-    document.getElementById('createAppointmentClientId').value = clientId;
+    const clientId = document.getElementById('clientID') ? document.getElementById('clientID').textContent : '';
+    if (clientId) {
+        document.getElementById('createAppointmentClientId').value = clientId;
+    }
     createForm.style.display = 'block';
     document.getElementById("clientDetails").style.display="none";
     document.getElementById("appointmentDetails").style.display="none";
