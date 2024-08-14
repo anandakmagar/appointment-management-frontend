@@ -35,6 +35,14 @@ nav ul li a:hover {
     text-decoration: underline;
 }
 
+nav ul li button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
 footer {
     background-color: #007bff;
     color: white;
