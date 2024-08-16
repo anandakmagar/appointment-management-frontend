@@ -200,7 +200,7 @@
             </form>
         </div>
 
-        <div id="createAppointmentForm" class="edit-form" style="display: none;">
+        <!-- <div id="createAppointmentForm" class="edit-form" style="display: none;">
             <h4>Create Appointment</h4>
             <form>
                 <label for="createAppointmentClientId">Client ID:</label>
@@ -225,12 +225,41 @@
                 <input type="text" id="createAppointmentPostalCode">
                 <button type="button" onclick="createAppointment()">Create Appointment</button>
             </form>
+        </div> -->
+
+        <div id="createAppointmentForm" class="edit-form" style="display: none;">
+            <h4>Create Appointment</h4>
+            <form>
+                <label for="createAppointmentClientId">Client ID:</label>
+                <select id="createAppointmentClientId" name="clientId">
+                </select>
+                <label for="createAppointmentStaffId">Staff ID:</label>
+                <select id="createAppointmentStaffId"></select>
+                <label for="createAppointmentDateTime">Date and Time:</label>
+                <input type="datetime-local" id="createAppointmentDateTime">
+                <label for="createAppointmentType">Type:</label>
+                <select id="createAppointmentType"></select>
+                <label for="createAppointmentStatus">Status:</label>
+                <select id="createAppointmentStatus"></select>
+                <label for="createAppointmentFacilityName">Facility Name:</label>
+                <input type="text" id="createAppointmentFacilityName">
+                <label for="createAppointmentStreetAddress">Street Address:</label>
+                <input type="text" id="createAppointmentStreetAddress">
+                <label for="createAppointmentCity">City:</label>
+                <input type="text" id="createAppointmentCity">
+                <label for="createAppointmentState">State:</label>
+                <input type="text" id="createAppointmentState">
+                <label for="createAppointmentPostalCode">Postal Code:</label>
+                <input type="text" id="createAppointmentPostalCode">
+                <button type="button" onclick="createAppointment()">Create Appointment</button>
+            </form>
         </div>
+        
     </div>
 
     <div id="loading" class="loading-overlay" style="display: none;">
         <div class="loading-spinner"></div>
-        <p id="loadingMessage" style="margin-top: 20px; color: #333; font-size: 18px;">Please wait! You're being logged out!!</p>
+        <p id="loadingMessage" style="margin-top: 20px; color: #333; font-size: 18px;">Please wait!</p>
     </div>
 
     <footer>

@@ -1091,42 +1091,17 @@ async function deleteData(type, id) {
 //     document.getElementById("appointmentList").style.display="none";
 // }
 
-// Showing the form for creating an appointment, and load the client list when accessed from the staff page
-// function showCreateAppointmentForm() {
-//     const createForm = document.getElementById('createAppointmentForm');
-//     const clientId = document.getElementById('clientID') ? document.getElementById('clientID').textContent : '';
-//     if (clientId) {
-//         document.getElementById('createAppointmentClientId').value = clientId;
-//     }
-//     createForm.style.display = 'block';
-//     document.getElementById("clientDetails").style.display="none";
-//     document.getElementById("appointmentDetails").style.display="none";
-//     document.getElementById("appointmentList").style.display="none";
-// }
-
-async function showCreateAppointmentForm() {
+function showCreateAppointmentForm() {
     const createForm = document.getElementById('createAppointmentForm');
-
-    // Clear the existing client list before loading new ones
-    const clientSelectCreate = document.getElementById('createAppointmentClientId');
-    clientSelectCreate.innerHTML = ''; // Clear the dropdown
-
-    // Load the client list to populate the dropdown
-    await loadClientList();
-
-    // If there is a specific client ID to be preselected (e.g., from client details page)
-    const clientId = document.getElementById('clientID') ? document.getElementById('clientID').textContent : '';
-    if (clientId) {
-        clientSelectCreate.value = clientId;
-    }
-
+    const clientId = document.getElementById('clientID').textContent;
+    document.getElementById('createAppointmentClientId').value = clientId;
     createForm.style.display = 'block';
-    document.getElementById("clientDetails").style.display = "none";
-    document.getElementById("staffDetails").style.display = "none";
-    document.getElementById("appointmentDetails").style.display = "none";
-    document.getElementById("appointmentList").style.display = "none";
+    document.getElementById("clientDetails").style.display="none";
+    document.getElementById("appointmentDetails").style.display="none";
+    document.getElementById("appointmentList").style.display="none";
 }
 
+// Ensure loadClientList is properly fetching and populating the dropdown
 async function loadClientList() {
     try {
         const response = await fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/client/fetchAllClients', {
