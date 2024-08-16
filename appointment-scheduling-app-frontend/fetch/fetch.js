@@ -1092,17 +1092,34 @@ async function deleteData(type, id) {
 // }
 
 // Showing the form for creating an appointment, and load the client list when accessed from the staff page
-function showCreateAppointmentForm() {
+// function showCreateAppointmentForm() {
+//     const createForm = document.getElementById('createAppointmentForm');
+//     const clientId = document.getElementById('clientID') ? document.getElementById('clientID').textContent : '';
+//     if (clientId) {
+//         document.getElementById('createAppointmentClientId').value = clientId;
+//     }
+//     createForm.style.display = 'block';
+//     document.getElementById("clientDetails").style.display="none";
+//     document.getElementById("appointmentDetails").style.display="none";
+//     document.getElementById("appointmentList").style.display="none";
+// }
+
+async function showCreateAppointmentForm() {
     const createForm = document.getElementById('createAppointmentForm');
+    
+    await loadClientList();
+
     const clientId = document.getElementById('clientID') ? document.getElementById('clientID').textContent : '';
     if (clientId) {
         document.getElementById('createAppointmentClientId').value = clientId;
     }
+
     createForm.style.display = 'block';
     document.getElementById("clientDetails").style.display="none";
     document.getElementById("appointmentDetails").style.display="none";
     document.getElementById("appointmentList").style.display="none";
 }
+
 
 async function createAppointment() {
     const clientId = document.getElementById('createAppointmentClientId').value;
