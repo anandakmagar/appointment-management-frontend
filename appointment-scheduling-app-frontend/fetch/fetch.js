@@ -1106,19 +1106,51 @@ async function deleteData(type, id) {
 
 async function showCreateAppointmentForm() {
     const createForm = document.getElementById('createAppointmentForm');
-    
+
+    // Clear the existing client list before loading new ones
+    const clientSelectCreate = document.getElementById('createAppointmentClientId');
+    clientSelectCreate.innerHTML = ''; // Clear the dropdown
+
+    // Load the client list to populate the dropdown
     await loadClientList();
 
+    // If there is a specific client ID to be preselected (e.g., from client details page)
     const clientId = document.getElementById('clientID') ? document.getElementById('clientID').textContent : '';
     if (clientId) {
-        document.getElementById('createAppointmentClientId').value = clientId;
+        clientSelectCreate.value = clientId;
     }
 
     createForm.style.display = 'block';
-    document.getElementById("clientDetails").style.display="none";
-    document.getElementById("appointmentDetails").style.display="none";
-    document.getElementById("appointmentList").style.display="none";
+    document.getElementById("clientDetails").style.display = "none";
+    document.getElementById("staffDetails").style.display = "none";
+    document.getElementById("appointmentDetails").style.display = "none";
+    document.getElementById("appointmentList").style.display = "none";
 }
+
+async function loadClientList() {
+    try {
+        const response = await fetch('https://appointment-management-da90d3c8d8ca.herokuapp.com/client/fetchAllClients', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        if (response.ok) {
+            const clientList = await response.json();
+            const clientSelectCreate = document.getElementById('createAppointmentClientId');
+            clientList.forEach(client => {
+                const option = document.createElement('option');
+                option.value = client.clientId;
+                option.textContent = `${client.clientId} - ${client.name}`;
+                clientSelectCreate.appendChild(option);
+            });
+        } else {
+            console.error('Failed to load client list');
+        }
+    } catch (error) {
+        console.error('Error loading client list:', error);
+    }
+}
+
 
 
 async function createAppointment() {
